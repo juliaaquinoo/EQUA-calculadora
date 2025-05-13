@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EQUA</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="menu-icon">&#9776;</div>
+    <div class="display">
+      <div id="expression">20 + 50</div>
+      <div id="result">70</div>
+    </div>
+    <div class="buttons">
+      <button class="func" onclick="clearDisplay()">C</button>
+      <button class="func" onclick="add('%')">%</button>
+      <button class="func" onclick="add('/')">÷</button>
+      <button class="func" onclick="add('*')">x</button>
+
+      <button onclick="add('7')">7</button>
+      <button onclick="add('8')">8</button>
+      <button onclick="add('9')">9</button>
+      <button class="func" onclick="add('-')">-</button>
+
+      <button onclick="add('4')">4</button>
+      <button onclick="add('5')">5</button>
+      <button onclick="add('6')">6</button>
+      <button class="func" onclick="add('+')">+</button>
+
+      <button onclick="add('1')">1</button>
+      <button onclick="add('2')">2</button>
+      <button onclick="add('3')">3</button>
+      <button class="equals" onclick="calculate()">=</button>
+
+      <button class="zero" onclick="add('0')">0</button>
+      <button onclick="add('.')">.</button>
+      <button onclick="backspace()">&#9003;</button>
+    </div>
+  </div>
+
+  <script>
+    let expression = "";
+
+    function add(char) {
+      expression += char;
+      document.getElementById("expression").innerText = expression;
+    }
+
+    function clearDisplay() {
+      expression = "";
+      document.getElementById("expression").innerText = "";
+      document.getElementById("result").innerText = "";
+    }
+
+    function backspace() {
+      expression = expression.slice(0, -1);
+      document.getElementById("expression").innerText = expression;
+    }
+
+    function calculate() {
+      fetch("http://localhost:5000/calcular", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ expressao: expression })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("result").innerText = data.resultado;
+      })
+      .catch(() => {
+        document.getElementById("result").innerText = "Erro";
+      });
+    }
+  </script>
+</body>
+</html>
